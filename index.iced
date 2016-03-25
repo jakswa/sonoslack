@@ -6,6 +6,7 @@ randomColor = require("randomcolor")
 fs = require('fs')
 request = require('request')
 imgur = require('imgur')
+gm = require('gm').subClass({imageMagick: true})
 
 download = (uri, filename, callback) ->
   f = (err, res, body) ->
@@ -45,6 +46,7 @@ checkSong = ->
     postSong(track)
 
 postSong = (track) ->
+  console.log("Jake here:", track);
   isBroke = false
   albumArtURL = track.albumArtURL
   lastArtist = track.artist
@@ -54,6 +56,7 @@ postSong = (track) ->
   console.log(oneLiner)
 
   await(download(albumArtURL, "./art.png", defer()))
+  await(gm('./art.png').resize(150,150).write('./art.png', defer()));
   await(imgur.uploadFile("./art.png").then(defer(imgurData)))
 
   postOptions =
